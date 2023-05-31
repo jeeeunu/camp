@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>4조 4랑해</title>
+
+        <!-- 부트스트랩 -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+            crossorigin="anonymous"
+        />
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- 폰트 -->
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
+        <!-- css -->
+        <style>
+            /******************************* 유지은 css */
+            * {
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                text-decoration: none;
+                font-family: "Noto Sans KR", sans-serif;
+                color: #333;
+            }
+
+            ol,
+            ul {
+                padding: 0;
+            }
+
+            p {
+                margin-bottom: 5px;
+            }
+
+            button {
+                height: 40px;
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+            }
+
+            .inner {
+                width: 1500px;
+                margin: 30px auto;
+            }
+
+            .main-img-wrap {
+                width: 500px;
+                height: 500px;
+            }
+
+            .header {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 15vh;
+                border-bottom: 1px solid #999;
+            }
+
+            .header-top {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 15px;
+            }
+
+            .nav-list {
+                display: flex;
+                gap: 10px;
+            }
+
+            .main {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                min-height: 80vh;
+            }
+
+            .footer {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 5vh;
+                background-color: #999;
+                color: #fff;
+            }
+
+            .footer p {
+                color: #fff;
+            }
+
+            .guestbook {
+                width: 30%;
+                font-size: 12px;
+            }
+            .comment_box p {
+                font-size: 14px;
+            }
+            .blockquote-footer {
+                margin: 0;
+            }
+            .mycards {
+                margin-bottom: 10px;
+            }
+            .my-info {
+                display: flex;
+                justify-content: space-between;
+                gap: 50px;
+            }
+            .btns {
+                display: flex;
+                gap: 10px;
+                justify-content: end;
+            }
+            .btns button {
+                flex: initial;
+                width: 100px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <!-- header -->
+        {% include 'common/header.html' %}
+
+        <!-- main -->
+        <main class="main inner">
+            <div class="d-flex gap-5">
+                <div class="main-img-wrap">
+                    <!-- 이미지 설정 아직 --!!!! -->
+                    <img src="https://i.postimg.cc/MTjqLLgQ/we.png" alt="" />
+                </div>
+                <div class="info-text">
+                    <p>어쩌고</p>
+                    <p>어쩌고</p>
+                    <p>어쩌고</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- footer -->
+        <footer class="footer">
+            <p>Copyright 2023 all rights reserved</p>
+        </footer>
+        <script src="{{ url_for('static',filename='js/common.js') }}"></script>
+    </body>
+</html>

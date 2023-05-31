@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>자바스크립트 문법 연습하기!</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<script>
+  function checkResult() {
+    const q1 = document.querySelector("#q1")
+    let fruits = ['사과', '배', '감', '귤', '수박'];
+    q1.innerHTML = "";
+    let temp_html = '';
+
+    fruits.forEach((fruit) => {
+      temp_html += `<p>${fruit}</p>`
+    });
+
+    q1.innerHTML = temp_html
+
+    let people = [{
+        'name': '서영',
+        'age': 24
+      },
+      {
+        'name': '현아',
+        'age': 30
+      },
+      {
+        'name': '영환',
+        'age': 12
+      },
+      {
+        'name': '서연',
+        'age': 15
+      },
+      {
+        'name': '지용',
+        'age': 18
+      },
+      {
+        'name': '예지',
+        'age': 36
+      }
+    ]
+
+    const q2 = document.querySelector("#q2")
+    q2.innerHTML = '';
+    let people_temp_html = '';
+
+    people.forEach((user) => {
+      // let name = user['name']; 
+      // let age = user['age']; 
+      q2.innerHTML += `<p>${user.name}은 ${user.age}살 입니다.</p>`
+    })
+
+  }
+</script>
+
+<body>
+  <div class="top-part">
+    <h1>자바스크립트 문법 연습하기!</h1>
+  </div>
+  <hr />
+  <br>
+  <h2>1. 함수</h2>
+  <div class="button-part">
+    <button onclick="checkResult()">결과 확인하기!</button>
+  </div>
+  <div class="list-part">
+    <h2>2. 붙이기</h2>
+    <div id="q1">
+      <p>사과</p>
+      <p>귤</p>
+      <p>감</p>
+    </div>
+  </div>
+  <div class="list-part">
+    <h2>3. 붙이기</h2>
+    <div id="q2">
+      <p>영수는 24살입니다.</p>
+      <p>세종은 30살입니다.</p>
+      <p>수영은 20살입니다.</p>
+    </div>
+  </div>
+</body>
+
+</html>

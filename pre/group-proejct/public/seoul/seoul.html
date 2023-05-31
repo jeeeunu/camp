@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
+    </script>
+
+    <title>서울-node연습중</title>
+
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet" />
+
+</head>
+
+<body>
+    <div class="mytitle">
+        <h1>서울 맛집 공유</h1>
+        <p class="weather-text"></p>
+        <button type="button" class="btn btn-warning" onclick="show()">새 글 등록할게용</button>
+    </div>
+    <div class="myform">
+        <div class="input-group mb-3">
+            <label for="reviewImg">사진URL</label>
+            <input type="text" class="form-control" id="reviewImg" name="img_give" placeholder="https://" />
+        </div>
+        <div class="input-group mb-3">
+            <label for="reviewName">가게명</label>
+            <input type="text" class="form-control" id="reviewName" placeholder="가게명을 작성해주세요." />
+        </div>
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01">별점</label>
+            <select class="form-select" id="inputGroupSelect01">
+                <option selected>-- 선택하기 --</option>
+                <option value="1">⭐</option>
+                <option value="2">⭐⭐</option>
+                <option value="3">⭐⭐⭐</option>
+                <option value="4">⭐⭐⭐⭐</option>
+                <option value="5">⭐⭐⭐⭐⭐</option>
+            </select>
+        </div>
+        <div class="input-group mb-3">
+            <label for="reviewComment">리뷰 한마디</label>
+            <input type="text" class="form-control" id="reviewComment" placeholder="리뷰를 작성해주세요." />
+        </div>
+        <div class="input-group mb-3">
+            <label for="reviewAddress">주소</label>
+            <input type="text" class="form-control" id="reviewAddress" placeholder="주소를 작성해주세요." />
+        </div>
+        <button class="btn btn-success"
+            onclick="if(document.querySelectorAll('input').value !== '') { saveReview(); }">등록하기</button>
+    </div>
+    <div class="mycards">
+        <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box"></div>
+    </div>
+    <!-- 스크립트 -->
+    <script>
+        // form 불러오기
+        function show() {
+            const form = document.querySelector(".myform");
+            form.classList.add("active");
+        }
+
+        // 날씨 api 불러오기
+        const weatherURL =
+            "https://api.openweathermap.org/data/2.5/weather?lat=37.541&lon=126.986&appid=faacf7d4a27a44f8a5ef62859ae577bb";
+        fetch(weatherURL)
+            .then((response) => response.json())
+            .then((data) => {
+                const kelvinTemp = data.main.temp;
+                const celsiusTemp = Math.round(kelvinTemp - 273.15);
+
+                // 텍스트 넣을거지롱
+                function changeWeatherText() {
+                    const weatehrText = document.querySelector(".weather-text");
+                    weatehrText.innerHTML = `현재 서울의 날씨는 ${celsiusTemp}도 입니당!`;
+                }
+                changeWeatherText();
+            })
+            .catch((error) => console.error("API 호출 실패", error));
+
+        // db 저장 함수
+        function saveReview() {
+            const reviewImg = document.querySelector("#reviewImg").value;
+            const reviewName = document.querySelector("#reviewName").value;
+            const reviewStar = document.querySelector("#inputGroupSelect01").value;
+            const reviewComment = document.querySelector("#reviewComment").value;
+            const reviewAddress = document.querySelector("#reviewAddress").value;
+
+            const params = new URLSearchParams({
+                img_give: reviewImg,
+                name_give: reviewName,
+                star_give: reviewStar,
+                comment_give: reviewComment,
+                address_give: reviewAddress
+            });
+
+            fetch("/seoulReview", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: params
+                })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+                    alert(data.msg);
+                    location.reload();
+                })
+                .catch(error => console.error(error));
+        }
+
+        // db 가져오기
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/seoulReview")
+                .then((res) => res.json())
+                .then((data) => {
+                    let reviewData = data.result;
+                    let cardWrap = document.querySelector("#cards-box");
+                    // console.log(reviewData);
+                    reviewData.forEach((item) => {
+                        const dbImg = item.img;
+                        const dbName = item.name;
+                        const dbReviewStar = item.star;
+                        let starView = "⭐".repeat(dbReviewStar);
+                        // console.log(dbReviewStar);
+
+                        const dbReviewComment = item.comment;
+                        const dbReviewAddress = item.address;
+
+                        let html_temp = `
+                                <div class="col">
+                                    <div class="card h-100">
+                                        <img src="${dbImg}" class="card-img-top" />
+                                        <div class="card-body">
+                                            <h5 class="card-title">${dbName}</h5>
+                                            <p class="card-text">${dbReviewComment}</p>
+                                            <p>${starView}</p>
+                                            <p class="address">${dbReviewAddress}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        cardWrap.innerHTML += html_temp.trim();
+                    });
+                });
+        });
+    </script>
+</body>
+
+</html>
