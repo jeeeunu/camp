@@ -14,15 +14,15 @@ const options = {
         Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIzZTM3ODgyMWMzYTE4M2NjOGJhNTc1YzhjYzkwNTMwNiIsInN1YiI6IjY0NzVkYjkyMWJmMjY2MDQ0MTQ2ZmNmYyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.HK9jbh1safzcGB0aV5mVDCCD8V-B26Gen4m4sguk6i8'
     }
 };
-
-//-- 문서 파싱 함수 --//
+const movieDB = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
+//-- 문서 파싱 후 실행 --//
 document.addEventListener('DOMContentLoaded', () => {
     fetchMovies();
 })
 
-//-- movie fetch --//
+//-- fetch --//
 function fetchMovies() {
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+    fetch(movieDB, options)
         .then(response => response.json())
         .then(data => {
             cardItemSet(data.results);
@@ -30,9 +30,10 @@ function fetchMovies() {
         .catch(err => console.error(err));
 }
 
-//-- 공통 함수 : 영화 카드 만들기 --//
+//-- common : 영화 카드 만들기 --//
 const cardItemSet = dataArr => {
 
+    // html로 변환하는 함수
     const htmlArray = dataArr.map((movie) => {
         const {
             id: movieId,
@@ -41,8 +42,6 @@ const cardItemSet = dataArr => {
             overview: moviewOverview,
             vote_average: movieAverate
         } = movie;
-
-        // console.log(movieImage)
 
         return `
             <div class="card-item" data-id="${movieId}" onClick="(${cardItemIdAlert})()">
@@ -54,7 +53,7 @@ const cardItemSet = dataArr => {
                 <p class="movie-averate">${movieAverate > 8.6 ? '📈' : '📉'} ${movieAverate}</p>
             </div>
         `
-    })
+    });
 
     // console.log(htmlArray)
     const cardList = document.querySelector('.card-list');
@@ -65,33 +64,44 @@ const cardItemSet = dataArr => {
 //-- 검색된 카드 데이터만 배열로 반환 --//
 const searchFunc = dataArr => {
     const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase();
+    // trim() 으로 문자열 앞뒤에 공백 등 정리
+    // replace() 으로 띄어쓰기 제거
+    // toLowerCase()로 소문자화
 
     return dataArr.filter(movie => {
         const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase();
         return movieName.includes(searchInputText);
+        // includes로 movieName에 searchInputText포함되어있는 movie 반환
     });
 };
 
-//-- 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
+//-- fetch : 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
 const btnSearch = document.querySelector('.btn-search');
+const emptyText = document.querySelector('.empty-text');
+
 btnSearch.addEventListener('click', () => {
-    fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options)
+    fetch(movieDB, options)
         .then(response => response.json())
         .then(data => {
             const results = data.results;
             const filteredResults = searchFunc(results);
+
+            // 검색한 배열에 데이터가 없을때 이벤트 처리
+            const numberOfResults = filteredResults.length;
+            numberOfResults === 0 ? emptyText.classList.remove('hidden') : emptyText.classList.add('hidden');
+
             cardItemSet(filteredResults);
         })
         .catch(err => console.error(err));
 });
 
-//-- card-item 클릭하면 id값 띄우는 함수 --//
+//-- 카드 클릭하면 id값 띄움 --//
 const cardItemIdAlert = () => {
     const dataId = this.dataset.id;
-    alert(`영화 id값은 ${dataId} 입니다 👏`);
+    alert(`영화 id값은 ${dataId} 입니다!`);
 };
 
-//-- input에서 enter 눌렀을시에 버튼 클릭되도록 하기 --//
+//-- input에서 엔터키 누르면 버튼 클릭 --//
 searchInput.addEventListener('keyup', (e) => {
     if (e.keyCode === 13) { // 눌린키가 enter키인지 확인
         btnSearch.click();
