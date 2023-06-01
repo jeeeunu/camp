@@ -21,6 +21,7 @@ const options = {
 };
 
 const movieDB = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
+// movie 데이터
 let movieDataArr = [];
 
 //-- fetch --//
@@ -65,24 +66,24 @@ const createCards = dataArr => {
         `;
   });
 
-  cardList.innerHTML = htmlArray.join('');
+  cardList.innerHTML = htmlArray.join(''); // 배열 문자열로 합치기
 };
 
-//-- return : 검색된 카드 데이터만 배열로 반환 --//
-const filterMovieCards = (dataArr, searchInputText) => {
+//-- return : 검색된 문자 제목의 데이터만 배열로 반환 --//
+const filterMovieCards = (dataArr) => {
   return dataArr.filter(movie => {
+    const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창
     const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase();
     return movieName.includes(searchInputText);
   });
 };
 
-///-- fetch : 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
+///-- 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
 const btnSearch = document.querySelector('.btn-search');
 const emptyText = document.querySelector('.empty-text');
 
 btnSearch.addEventListener('click', () => {
-  const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창
-  const filterResults = filterMovieCards(movieDataArr, searchInputText); // 필터링된 데이터
+  const filterResults = filterMovieCards(movieDataArr); // 필터링한 데이터
 
   // 필터링한 데이터가 비었을때 이벤트 처리
   const numberOfResults = filterResults.length;
