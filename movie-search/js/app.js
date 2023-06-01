@@ -6,6 +6,13 @@ console.log(`meow
  > ^ <
 `);
 
+// 문서 파싱 후 input에 포커스처리
+document.addEventListener('DOMContentLoaded', function () {
+  setTimeout(() => {
+    document.querySelector('#searchInput').focus();
+  }, 300);
+});
+
 // TMDB api
 const options = {
   method: 'GET',
@@ -77,6 +84,8 @@ const filterMovieCards = dataArr => {
     const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창 
     // trim() => 앞뒤 공백 정리 / replace(/ /g, "") => 띄어쓰기 삭제 / toLowerCase() => 소문자 변경
     const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase(); // 영화 이름
+    console.log(searchInputText)
+    console.log(movieName)
     return movieName.includes(searchInputText); // 영화 이름에 검색어가 포함되어 있는지 확인하고, 포함되어 있으면 true 값을 반환하여 데이터를 필터링
   });
 };
