@@ -89,8 +89,7 @@ btnSearch.addEventListener('click', () => {
   const filterResults = filterMovieCards(movieDataArr); // filterMovieCards 함수에 data를 넣어 필터링한 데이터 담음
 
   // 필터링한 데이터가 비었을때 empty-text 이벤트 처리
-  const numberOfResults = filterResults.length;
-  numberOfResults === 0 ? emptyText.classList.remove('hidden') : emptyText.classList.add('hidden');
+  filterResults.length === 0 ? emptyText.classList.remove('hidden') : emptyText.classList.add('hidden');
 
   createCards(filterResults); // 필터링한 데이터로 카드 만들기
 });
