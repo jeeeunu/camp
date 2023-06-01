@@ -70,7 +70,7 @@ const cardIDAlert = dataId => {
   alert(`영화 id값은 ${dataId} 입니다!`);
 };
 
-//-- function-return : 검색된 문자 제목의 데이터만 배열로 반환 --//
+//-- function-return : 기존 데이터에서 검색된 문자 제목의 데이터만 배열로 반환 --//
 const filterMovieCards = dataArr => {
 
   return dataArr.filter(movie => {
