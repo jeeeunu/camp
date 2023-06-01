@@ -64,7 +64,7 @@ const createCards = dataArr => {
 };
 
 //-- return : 검색된 문자 제목의 데이터만 배열로 반환 --//
-const filterMovieCards = (dataArr) => {
+const filterMovieCards = dataArr => {
   return dataArr.filter(movie => {
     const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창
     const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase();
@@ -79,7 +79,7 @@ const emptyText = document.querySelector('.empty-text');
 btnSearch.addEventListener('click', () => {
   const filterResults = filterMovieCards(movieDataArr); // 필터링한 데이터
 
-  // 필터링한 데이터가 비었을때 이벤트 처리
+  // 필터링한 데이터가 비었을때 empty-text 이벤트 처리
   const numberOfResults = filterResults.length;
   numberOfResults === 0 ? emptyText.classList.remove('hidden') : emptyText.classList.add('hidden');
 
