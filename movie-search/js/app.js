@@ -7,10 +7,10 @@ console.log(`meow
 `);
 
 // 문서 파싱 후 input에 포커스처리
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', () => {
   setTimeout(() => {
     document.querySelector('#searchInput').focus();
-  }, 300);
+  }, 400);
 });
 
 // TMDB api
