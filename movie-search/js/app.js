@@ -6,11 +6,6 @@ console.log(`meow
  > ^ <
 `);
 
-//-- 문서 파싱 후 실행 --//
-document.addEventListener('DOMContentLoaded', () => {
-  fetchMovies();
-})
-
 // TMDB api
 const options = {
   method: 'GET',
@@ -25,21 +20,20 @@ const movieDB = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&pag
 let movieDataArr = [];
 
 //-- fetch --//
-const fetchMovies = () => {
-  fetch(movieDB, options)
-    .then(response => response.json())
-    .then(data => {
-      movieDataArr = data.results; // movie 데이터 저장
-      createCards(movieDataArr);
-    })
-    .catch(err => console.error(err));
-}
+fetch(movieDB, options)
+  .then(response => response.json())
+  .then(data => {
+    movieDataArr = data.results; // movie 데이터 저장
+    createCards(movieDataArr);
+  })
+  .catch(err => console.error(err));
 
-//-- common : 영화 카드 만들기 --//
+//-- function : 영화 카드 만들기 --//
 const createCards = dataArr => {
   const cardList = document.querySelector('.card-list');
   cardList.innerHTML = ''; // 카드 리스트 비우기
 
+  // 데이터가 없으면 empty-text 띄우기
   if (dataArr.length === 0) {
     emptyText.classList.remove('hidden');
     return;
@@ -78,7 +72,7 @@ const filterMovieCards = (dataArr) => {
   });
 };
 
-///-- 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
+///-- event : 검색하기 버튼 클릭시 필터링된 데이터만 불러오기 --//
 const btnSearch = document.querySelector('.btn-search');
 const emptyText = document.querySelector('.empty-text');
 
@@ -92,12 +86,12 @@ btnSearch.addEventListener('click', () => {
   createCards(filterResults); // 필터링한 데이터로 카드 만들기
 });
 
-//-- 카드 클릭하면 id값 띄움 --//
+//-- function : 카드 클릭하면 id값 띄움 --//
 const cardIDAlert = dataId => {
   alert(`영화 id값은 ${dataId} 입니다!`);
 };
 
-//-- input에서 엔터키 누르면 버튼 클릭 --//
+//-- event : input에서 엔터키 누르면 버튼 클릭 --//
 searchInput.addEventListener('keyup', (e) => {
   if (e.keyCode === 13) { // 눌린키가 enter 키 인지 확인하는 조건문
     btnSearch.click();
