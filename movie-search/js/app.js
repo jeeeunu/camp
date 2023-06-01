@@ -16,7 +16,8 @@ const options = {
 };
 
 const movieDB = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
-// movie 데이터
+
+// movie 데이터 담을거임
 let movieDataArr = [];
 
 //-- fetch --//
@@ -31,7 +32,7 @@ fetch(movieDB, options)
 //-- function : 영화 카드 만들기 --//
 const createCards = dataArr => {
   const cardList = document.querySelector('.card-list');
-  cardList.innerHTML = ''; // 카드 리스트 비우기
+  cardList.innerHTML = ''; // 카드 담는 리스트 비우기
 
   // 데이터가 없으면 empty-text 띄우기
   if (dataArr.length === 0) {
@@ -39,6 +40,7 @@ const createCards = dataArr => {
     return;
   }
 
+  // 데이터 map 돌려서 html 템플릿 담음
   const htmlArray = dataArr.map((movie) => {
     const {
       id: movieId,
@@ -60,15 +62,22 @@ const createCards = dataArr => {
         `;
   });
 
-  cardList.innerHTML = htmlArray.join(''); // 배열 문자열로 합치기
+  cardList.innerHTML = htmlArray.join(''); // 데이터 담은 htmlArray를 문자열로 합쳐서 card-list에 넣음
 };
 
-//-- return : 검색된 문자 제목의 데이터만 배열로 반환 --//
+//-- function : 카드 클릭하면 id값 띄움 --//
+const cardIDAlert = dataId => {
+  alert(`영화 id값은 ${dataId} 입니다!`);
+};
+
+//-- function-return : 검색된 문자 제목의 데이터만 배열로 반환 --//
 const filterMovieCards = dataArr => {
+
   return dataArr.filter(movie => {
-    const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창
-    const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase();
-    return movieName.includes(searchInputText);
+    const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창 
+    // trim() => 앞뒤 공백 정리 / replace(/ /g, "") => 띄어쓰기 삭제 / toLowerCase() => 소문자 변경
+    const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase(); // 영화 이름
+    return movieName.includes(searchInputText); // 영화 이름에 검색한 문자가 포함되어 있는지 확인하고, 포함되어 있으면 true 값인 데이터 반환
   });
 };
 
@@ -77,7 +86,7 @@ const btnSearch = document.querySelector('.btn-search');
 const emptyText = document.querySelector('.empty-text');
 
 btnSearch.addEventListener('click', () => {
-  const filterResults = filterMovieCards(movieDataArr); // 필터링한 데이터
+  const filterResults = filterMovieCards(movieDataArr); // filterMovieCards 함수에 data를 넣어 필터링한 데이터 담음
 
   // 필터링한 데이터가 비었을때 empty-text 이벤트 처리
   const numberOfResults = filterResults.length;
@@ -85,11 +94,6 @@ btnSearch.addEventListener('click', () => {
 
   createCards(filterResults); // 필터링한 데이터로 카드 만들기
 });
-
-//-- function : 카드 클릭하면 id값 띄움 --//
-const cardIDAlert = dataId => {
-  alert(`영화 id값은 ${dataId} 입니다!`);
-};
 
 //-- event : input에서 엔터키 누르면 버튼 클릭 --//
 searchInput.addEventListener('keyup', (e) => {
