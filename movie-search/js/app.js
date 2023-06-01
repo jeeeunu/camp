@@ -77,7 +77,7 @@ const filterMovieCards = dataArr => {
     const searchInputText = searchInput.value.trim().replace(/ /g, "").toLowerCase(); // 검색 인풋창 
     // trim() => 앞뒤 공백 정리 / replace(/ /g, "") => 띄어쓰기 삭제 / toLowerCase() => 소문자 변경
     const movieName = movie.original_title.trim().replace(/ /g, "").toLowerCase(); // 영화 이름
-    return movieName.includes(searchInputText); // 영화 이름에 검색한 문자가 포함되어 있는지 확인하고, 포함되어 있으면 true 값인 데이터 반환
+    return movieName.includes(searchInputText); // 영화 이름에 검색어가 포함되어 있는지 확인하고, 포함되어 있으면 true 값을 반환하여 데이터를 필터링
   });
 };
 
