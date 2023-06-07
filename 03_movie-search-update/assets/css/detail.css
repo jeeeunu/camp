@@ -1,0 +1,210 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+  /* font-family: 'Poppins', sans-serif; */
+  transition: all 0.35s linear;
+}
+
+.detail_container {
+  /* width: 80%; */
+  display: grid;
+  grid-template-columns: 700px 1fr;
+  grid-gap: 32px;
+  backdrop-filter: blur(12px) contrast(80%);
+  color: rgb(0, 0, 0);
+  /* margin: 0px 10%; */
+}
+
+.info {
+  padding-top: 24px;
+  padding-left: 24px;
+}
+
+.poster {
+  width: 700px;
+  height: 100vh;
+  overflow: hidden;
+  align-items: center;
+}
+
+.poster img {
+  width: 100%;
+  object-fit: cover;
+  overflow: hidden;
+  transition: all 0.2s linear;
+}
+
+.poster img:hover {
+  transform: scale(1.03);
+}
+
+.info>div {
+  margin-top: 32px;
+  margin-bottom: 32px;
+  margin-right: 32px;
+}
+
+.movie-title {
+  font-size: 64px;
+  font-weight: bold;
+  color: black;
+}
+
+.movie-detail .set {
+  display: inline-block;
+  margin-right: 64px;
+}
+
+.movie-detail label {
+  font-size: 14px;
+  color: #000000;
+  display: block;
+}
+
+.movie-detail span {
+  font-size: 22px;
+}
+
+.movie-description {
+  line-height: 24px;
+}
+
+
+/* 추가 css */
+.hidden {
+  display: none;
+}
+
+ul,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+  display: flex;
+  position: relative;
+  gap: 2%;
+  padding: 0 2%;
+}
+
+.movie-detail-container {
+  width: 75%;
+}
+
+.review-container {
+  position: sticky;
+  top: 2%;
+  width: 25%;
+  max-height: 800px;
+  margin: 2% 0;
+  padding: 15px 30px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: auto;
+}
+
+.review-container::-webkit-scrollbar {
+  width: 10px;
+}
+
+.review-container::-webkit-scrollbar-thumb {
+  background-color: #ddd;
+  border-radius: 10px;
+  background-clip: padding-box;
+  border: 2px solid transparent;
+}
+
+.review-container::-webkit-scrollbar-track {
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 5px white;
+}
+
+.review-container .review-title {
+  display: block;
+  margin-bottom: 15px;
+}
+
+.input-box+.input-box {
+  margin-top: 10px;
+}
+
+.review-container textarea {
+  resize: none;
+}
+
+.review-container .input-wrap {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+}
+
+/* .review-container .btn-primary {
+  width: max-content;
+  height: 30px;
+  padding: 0 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  font-size: 12px;
+} */
+
+.btn-review-submit {
+  margin: 10px 0;
+}
+
+.review-item {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 20px;
+  border-bottom: 1px solid #ddd;
+}
+
+.review-item:last-child {
+  border-bottom: 0;
+}
+
+.review-item .text-wrap {
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+
+.review-text {
+  font-weight: 700;
+}
+
+.review-writer {
+  margin-left: auto;
+  font-size: 14px;
+  font-style: italic;
+}
+
+.review-writer::before {
+  content: '🫥';
+}
+
+.btn-group {
+  margin-left: auto;
+}
+
+.btn-group button {
+  font-size: 12px;
+}
+
+.edit-wrap {
+  display: flex;
+  flex-direction: column;
+}
+
+.edit-wrap.hidden {
+  display: none;
+}
+
+.edit-wrap .btn-outline-primary {
+  width: max-content;
+  margin: 10px 0 10px auto;
+}
