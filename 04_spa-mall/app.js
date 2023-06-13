@@ -2,8 +2,9 @@ const express = require('express');
 const app = express();
 const port = 3000;
 
-//-- goods.js 가져오기 --//
-const goodsRouter = require('./routes/goods.js')
+//-- router 가져오기 --//
+const goodsRouter = require('./routes/goods.js');
+const cartRouter = require("./routes/carts.js");
 
 //-- mongodb 연결한 index.js --//
 const connet = require("./schemas");
@@ -11,7 +12,7 @@ connet();
 
 //------------------------------------------//
 app.use(express.json()); // body-parser Middleware(전역 미들웨어)를 쓰기위한 문법이다.
-app.use("/api", [goodsRouter]);
+app.use("/api", [goodsRouter, cartRouter]); // router api 연결
 
 app.post("/", (req, res) => {
   console.log(req.body); // 실제 body 데이터 확인

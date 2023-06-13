@@ -4,11 +4,11 @@ const cartSchema = new mongoose.Schema({
   goodsId: {
     type: Number,
     required: true,
-    unique: true
+    unique: true,
   },
   quantity: {
     type: Number,
-    required: true
+    required: true,
   }
 });
 
