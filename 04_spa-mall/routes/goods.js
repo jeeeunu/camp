@@ -59,11 +59,30 @@ router.get("/goods/:goodsId", (req, res) => {
   res.status(200).json({ "detail": result });
 });
 
+//-- POST : 장바구니에 상품 추가 API --//
+const Cart = require("../schemas/cart.js");
+router.post("/goods/:goodsId/cart", async (req, res) => {
+  const { goodsId } = req.params;
+  const { quantity } = req.body;
 
-//-- mongodb 관련 코드 --//
-const Goods = require("../schemas/goods.js"); 
+  const existCarts = await Cart.find({ goodsId });
+  if (existCarts.length) {
+    return res.status(400).json({
+      success: false,
+      errorMessage: "이미 장바구니에 해당하는 상품이 존재합니다.",
+    })
+  }
+
+  await Cart.create({ goodsId, quantity });
+
+  res.json({ result: "sucess" });
+});
+
+
+//-- POST : good 스키마 생성 --//
+const Goods = require("../schemas/goods.js");
 router.post("/goods/", async (req, res) => {
-  const { goodsId, name, thumbnailUrl, category, price } = req.body;
+  const { goodsId, name, thumbnailUrl, category, price } = req.body; // post이기 때문에 body에 받을 수 있음.
 
   const goods = await Goods.find({ goodsId });
 
