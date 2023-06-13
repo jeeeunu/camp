@@ -79,10 +79,41 @@ router.post("/goods/:goodsId/cart", async (req, res) => {
 });
 
 
+//-- PUT : 장바구니의 상품 수량 변경 --//
+router.put("/goods/:goodsId/cart", async (req, res) => {
+  const { goodsId } = req.params;
+  const { quantity } = req.body;
+
+  const existCarts = await Cart.find({ goodsId });
+  if (existCarts.length) {
+    await Cart.updateOne(
+      { goodsId: goodsId }, // 수정할 대상
+      { $set: { quantity: quantity } } // 수정할 것
+    )
+  }
+
+  res.status(200).json({ success: true }); // 참고 : 무조건 sucess값이 나오도록 설정해둠..
+});
+
+
+//-- DELETE : 장바구니의 상품 삭제 --//
+router.delete("/goods/:goodsId/cart", async (req, res) => {
+  const { goodsId } = req.params;
+
+  const existCarts = await Cart.find({ goodsId });
+  if (existCarts.length) {
+    await Cart.deleteOne({ goodsId });
+  };
+
+  res.json({ result: "sucess" });
+});
+
+
+
 //-- POST : good 스키마 생성 --//
 const Goods = require("../schemas/goods.js");
 router.post("/goods/", async (req, res) => {
-  const { goodsId, name, thumbnailUrl, category, price } = req.body; // post이기 때문에 body에 받을 수 있음.
+  const { goodsId, name, thumbnailUrl, category, price } = req.body;
 
   const goods = await Goods.find({ goodsId });
 
