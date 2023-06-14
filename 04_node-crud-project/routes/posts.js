@@ -1,7 +1,3 @@
-const express = require('express');
-const router = express.Router();
-const { UUID } = require('bson');
-
 //-- 클라이언트가 존재하지 않기때문에 임의로 설정한 posts --//
 const clientPosts = [
   {
@@ -24,9 +20,14 @@ const clientPosts = [
   }
 ];
 
-// POST: post 데이터 내보내기
-const postSchema = require('../db/post_schema');
+// ------------------------------------------------------------------------- //
+const express = require('express');
+const router = express.Router();
 
+const postSchema = require('../db/post_schema');
+const postDatas = await postSchema.find();
+
+// POST: post 데이터 내보내기
 router.post('/', async (req, res) => {
   try {
     req.body = clientPosts;
@@ -35,8 +36,8 @@ router.post('/', async (req, res) => {
       // for of문 -> 병렬방식으로 변경 (순서를 보장할 필요 없는 반복작업)
       const newPost = new postSchema(
         {
-          createdAt: new Date(),
-          ...post
+          ...post,
+          createdAt: new Date()
         }
       );
       await newPost.save();
@@ -50,8 +51,24 @@ router.post('/', async (req, res) => {
 
 // GET : post 데이터 가져오기
 router.get('/', async (req, res) => {
+  try {
+    res.json(postDatas)
+  } catch (err) {
+    res.status(400).json({ "message": "hey" });
+  }
+});
 
-})
+// GET : post 상세 페이지 데이터 가져오기
+router.get('/:_id', async (req, res) => {
+  const postID = req.params;
+
+  const [result] = postDatas.filter(())
+  try {
+
+  } catch {
+
+  }
+});
 
 
 module.exports = router;
