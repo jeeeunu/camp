@@ -9,8 +9,8 @@ app.use(express.json());
 require('./db/server_mongo');
 
 //-- 라우트 설정 --//
-const usersRouter = require('./routes/posts');
-app.use('/blog', usersRouter);
+const postsRouter = require('./routes/posts');
+app.use('/posts', postsRouter);
 
 //-- 기본 경로 라우트 --//
 app.get('/', (req, res) => {
