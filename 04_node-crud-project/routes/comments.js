@@ -73,22 +73,21 @@ const mongoose = require('mongoose');
 
 router.post('/:postID', async (req, res) => {
   const { postID } = req.params;
-
   req.body = clientComments;
 
-  // postID 유효성 검사
-  if (!mongoose.Types.ObjectId.isValid(postID)) {
-    res.status(404).json({ message: '유효하지 않은 게시물 ID입니다.' });
-    return;
-  }
-
-  // req.body 유효성 검사
-  if (!req.body.length) {
-    res.status(400).json({ message: '댓글 내용을 입력해주세요.' });
-    return;
-  }
-
   try {
+    // postID 유효성 검사
+    if (!mongoose.Types.ObjectId.isValid(postID)) {
+      res.status(404).json({ message: '유효하지 않은 게시물 ID입니다.' });
+      return;
+    }
+
+    // req.body 유효성 검사
+    if (!req.body.length) {
+      res.status(400).json({ message: '댓글 내용을 입력해주세요.' });
+      return;
+    }
+
     const commentPromises = clientComments.map(async (comment) => {
       const newComment = new commentSchema({
         ...comment,
