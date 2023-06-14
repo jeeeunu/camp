@@ -6,7 +6,7 @@ const port = 3000;
 app.use(express.json());
 
 //-- DB --//
-require('./db/server_mongo');
+require('./db/mongodb');
 
 //-- 라우트 설정 --//
 const postsRouter = require('./routes/posts');

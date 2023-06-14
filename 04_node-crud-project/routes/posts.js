@@ -36,7 +36,7 @@ const express = require('express');
 const router = express.Router();
 const { ObjectId } = require('mongodb');
 
-const postSchema = require('../db/post_schema');
+const postSchema = require('../schemas/post_schema');
 
 
 // POST: 게시물 데이터 내보내기
