@@ -10,7 +10,9 @@ require('./db/mongodb');
 
 //-- 라우트 설정 --//
 const postsRouter = require('./routes/posts');
+const commentRouter = require('./routes/comments');
 app.use('/posts', postsRouter);
+app.use('/comments', commentRouter);
 
 //-- 기본 경로 라우트 --//
 app.get('/', (req, res) => {

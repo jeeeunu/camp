@@ -1,4 +1,4 @@
-//-- 클라이언트가 생성한 posts --//
+//-- 클라이언트 : 게시물 생성 --//
 const clientPosts = [
   {
     user: "Developer1",
@@ -20,13 +20,13 @@ const clientPosts = [
   }
 ];
 
-//-- 클라이언트가 수정한 posts --//
+//-- 클라이언트 : 수정 게시물 --//
 const clientEditPosts = {
   title: "제목도 수정해떠요!!!",
   content: "수정해떠요!!!!",
 }
 
-//-- 클라이언트가 삭제요청. --//
+//-- 클라이언트 : 게시물 삭제 --//
 const cliendDeletePosts = {
   password: "1234",
 }
@@ -34,9 +34,7 @@ const cliendDeletePosts = {
 // ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
-const { ObjectId } = require('mongodb');
-
-const postSchema = require('../schemas/post_schema');
+const postSchema = require('../schemas/post');
 
 
 // POST: 게시물 데이터 내보내기
@@ -119,12 +117,12 @@ router.delete('/:postID', async (req, res) => {
     const postData = await postSchema.findById(postID);
     if (postData.password === req.body.password) {
       await postData.deleteOne();
-      res.status(200).json({ message: "게시물을 삭제하였습니다." });
+      res.status(200).json({ "message": "게시물을 삭제하였습니다." });
     } else {
-      res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
+      res.status(401).json({ "message": "비밀번호가 일치하지 않습니다." });
     }
   } catch (err) {
-    res.status(400).json({ message: "오류 발생", error: err });
+    res.status(400).json({ "message": "오류 발생", error: err });
   }
 });
 

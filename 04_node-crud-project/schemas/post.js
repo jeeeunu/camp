@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-// post 스키마 내용 정의
+// post 스키마 정의
 const postSchema = new mongoose.Schema({
   user: {
     type: String,
