@@ -112,4 +112,35 @@ router.put('/:commentID', async (req, res) => {
 });
 
 
+// DELETE : 댓글 삭제
+router.delete('/:commentID', async (req, res) => {
+  const { commentID } = req.params;
+  req.body = cliendDeleteComments;
+
+  // commentID 유효성 검사
+  if (!mongoose.Types.ObjectId.isValid(commentID)) {
+    return res.status(404).json({ "message": "해당하는 데이터가 없습니다." });
+  }
+
+  try {
+    const commentData = await commentSchema.findById(commentID);
+
+    if (!commentData) {
+      return res.status(404).json({ "message": "해당하는 데이터가 없습니다." });
+    }
+
+    if (commentData.password === req.body.password) {
+      await commentData.deleteOne();
+      return res.status(200).json({ "message": "댓글 삭제 완료" });
+    } else {
+      return res.status(400).json({ "message": "비번 아님" });
+    }
+
+  } catch (error) {
+    return res.status(500).json({ "message": "오류", "error": error });
+  }
+});
+
+
+
 module.exports = router;
