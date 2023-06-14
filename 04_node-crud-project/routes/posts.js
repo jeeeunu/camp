@@ -23,11 +23,12 @@ const clientPosts = [
 // ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
+const { ObjectId } = require('mongodb');
 
 const postSchema = require('../db/post_schema');
-const postDatas = await postSchema.find();
 
-// POST: post 데이터 내보내기
+
+// POST: 게시물 데이터 내보내기
 router.post('/', async (req, res) => {
   try {
     req.body = clientPosts;
@@ -49,26 +50,49 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET : post 데이터 가져오기
+// GET : 게시물 데이터 가져오기
 router.get('/', async (req, res) => {
   try {
+    const postDatas = await postSchema.find();
     res.json(postDatas)
   } catch (err) {
     res.status(400).json({ "message": "hey" });
   }
 });
 
-// GET : post 상세 페이지 데이터 가져오기
-router.get('/:_id', async (req, res) => {
-  const postID = req.params;
+// GET : 게시물 상세 페이지 데이터 가져오기
+router.get('/:postID', async (req, res) => {
+  const postID = req.params.postID;
 
-  const [result] = postDatas.filter(())
   try {
+    const postResult = await postSchema.findById(postID);
 
-  } catch {
+    if (postResult) {
+      res.status(200).json({ "결과": postResult });
+    } else {
+      res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
+    }
+  } catch (err) {
+    res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+  }
+});
+
+// PUT : 게시물 수정하기
+router.put('/:postID', async (req, res) => {
+  const postID = req.params.postID;
+
+  try {
+    const postResult = await postSchema.findById(postID);
+
+    if (postResult) {
+      res.status(200).json({ "결과": postResult });
+    }
 
   }
 });
+
+
+
 
 
 module.exports = router;
