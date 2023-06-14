@@ -2,6 +2,10 @@ const mongoose = require('mongoose');
 
 // comment 스키마 정의
 const commentSchema = new mongoose.Schema({
+  post: {
+    type: String,
+    required: true,
+  },
   user: {
     type: String,
     required: true,

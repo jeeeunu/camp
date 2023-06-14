@@ -34,7 +34,7 @@ const cliendDeletePosts = {
 // ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
-const postSchema = require('../schemas/post');
+const postSchema = require('../schemas/post-shema');
 
 
 // POST: 게시물 데이터 내보내기
@@ -53,8 +53,8 @@ router.post('/', async (req, res) => {
       await newPost.save();
     }));
 
-    res.json({ "message": "게시글을 생성하였습니다." });
-  } catch (error) {
+    res.status(200).json({ "message": "게시글을 생성하였습니다." });
+  } catch (erroror) {
     res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
   }
 });
@@ -64,7 +64,7 @@ router.get('/', async (req, res) => {
   try {
     const postDatas = await postSchema.find();
     res.json(postDatas)
-  } catch (err) {
+  } catch (error) {
     res.status(400).json({ "message": "hey" });
   }
 });
@@ -81,7 +81,7 @@ router.get('/:postID', async (req, res) => {
     } else {
       res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
     }
-  } catch (err) {
+  } catch (error) {
     res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
   }
 });
@@ -99,11 +99,11 @@ router.put('/:postID', async (req, res) => {
       res.status(200).json({ "message": "게시글을 수정하였습니다." });
     }
 
-  } catch (err) {
-    if (err.name === "CastError") {
-      res.status(404).json({ "message": "그런 게시물은 없습니다만" });
+  } catch (error) {
+    if (error.name === "CastError") {
+      res.status(404).json({ "message": "그런 게시물은 없습니다만", error: error });
     } else {
-      res.status(400).json({ "message": "게시글 조회에 실패하였습니다.'" });
+      res.status(400).json({ "message": "게시글 조회에 실패하였습니다.", error: error });
     }
   }
 });
@@ -121,8 +121,8 @@ router.delete('/:postID', async (req, res) => {
     } else {
       res.status(401).json({ "message": "비밀번호가 일치하지 않습니다." });
     }
-  } catch (err) {
-    res.status(400).json({ "message": "오류 발생", error: err });
+  } catch (error) {
+    res.status(400).json({ "message": "오류 발생", erroror: error });
   }
 });
 
