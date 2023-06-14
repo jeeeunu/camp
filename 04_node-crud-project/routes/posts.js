@@ -1,4 +1,4 @@
-//-- 클라이언트가 존재하지 않기때문에 임의로 설정한 posts --//
+//-- 클라이언트가 생성한 posts --//
 const clientPosts = [
   {
     user: "Developer1",
@@ -19,6 +19,12 @@ const clientPosts = [
     content: "안녕하세요 Developer3 입니다."
   }
 ];
+
+//-- 클라이언트가 수정한 posts --//
+const clientEditPosts = {
+  title: "제목도 수정해떠요!!!",
+  content: "수정해떠요!!!!",
+}
 
 // ------------------------------------------------------------------------- //
 const express = require('express');
@@ -80,19 +86,21 @@ router.get('/:postID', async (req, res) => {
 // PUT : 게시물 수정하기
 router.put('/:postID', async (req, res) => {
   const postID = req.params.postID;
+  req.body = clientEditPosts;
 
   try {
     const postResult = await postSchema.findById(postID);
 
-    if (postResult) {
-      res.status(200).json({ "결과": postResult });
+    if (postResult && req.body) {
+
+      await postResult.updateOne({ $set: { ...clientEditPosts } });
+
+      res.status(200).json({ message: "게시물 수정 완료" });
     }
 
+  } catch (err) {
+    res.status(400).json({ error: err });
   }
 });
-
-
-
-
 
 module.exports = router;
