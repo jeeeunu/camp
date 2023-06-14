@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { UUID } = require('bson');
 
 //-- 클라이언트가 존재하지 않기때문에 임의로 설정한 posts --//
 const clientPosts = [
@@ -32,7 +33,12 @@ router.post('/', async (req, res) => {
 
     await Promise.all(req.body.map(async (post) => {
       // for of문 -> 병렬방식으로 변경 (순서를 보장할 필요 없는 반복작업)
-      const newPost = new postSchema(post);
+      const newPost = new postSchema(
+        {
+          createdAt: new Date(),
+          ...post
+        }
+      );
       await newPost.save();
     }));
 
@@ -42,6 +48,10 @@ router.post('/', async (req, res) => {
   }
 });
 
+// GET : post 데이터 가져오기
+router.get('/', async (req, res) => {
+
+})
 
 
 module.exports = router;
