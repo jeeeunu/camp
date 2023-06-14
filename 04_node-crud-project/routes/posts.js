@@ -26,6 +26,11 @@ const clientEditPosts = {
   content: "수정해떠요!!!!",
 }
 
+//-- 클라이언트가 삭제요청. --//
+const cliendDeletePosts = {
+  password: "1234",
+}
+
 // ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
@@ -68,13 +73,13 @@ router.get('/', async (req, res) => {
 
 // GET : 게시물 상세 페이지 데이터 가져오기
 router.get('/:postID', async (req, res) => {
-  const postID = req.params.postID;
+  const { postID } = req.params;
 
   try {
-    const postResult = await postSchema.findById(postID);
+    const postData = await postSchema.findById(postID);
 
-    if (postResult) {
-      res.status(200).json({ "결과": postResult });
+    if (postData) {
+      res.status(200).json({ "결과": postData });
     } else {
       res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
     }
@@ -85,22 +90,43 @@ router.get('/:postID', async (req, res) => {
 
 // PUT : 게시물 수정하기
 router.put('/:postID', async (req, res) => {
-  const postID = req.params.postID;
+  const { postID } = req.params;
   req.body = clientEditPosts;
 
   try {
-    const postResult = await postSchema.findById(postID);
+    const postData = await postSchema.findById(postID);
 
-    if (postResult && req.body) {
-
-      await postResult.updateOne({ $set: { ...clientEditPosts } });
-
-      res.status(200).json({ message: "게시물 수정 완료" });
+    if (postData && req.body) {
+      await postData.updateOne({ $set: { ...clientEditPosts } });
+      res.status(200).json({ "message": "게시글을 수정하였습니다." });
     }
 
   } catch (err) {
-    res.status(400).json({ error: err });
+    if (err.name === "CastError") {
+      res.status(404).json({ "message": "그런 게시물은 없습니다만" });
+    } else {
+      res.status(400).json({ "message": "게시글 조회에 실패하였습니다.'" });
+    }
   }
 });
+
+// DELETE : 게시물 삭제하기
+router.delete('/:postID', async (req, res) => {
+  const { postID } = req.params;
+  req.body = cliendDeletePosts;
+
+  try {
+    const postData = await postSchema.findById(postID);
+    if (postData.password === req.body.password) {
+      await postData.deleteOne();
+      res.status(200).json({ message: "게시물을 삭제하였습니다." });
+    } else {
+      res.status(401).json({ message: "비밀번호가 일치하지 않습니다." });
+    }
+  } catch (err) {
+    res.status(400).json({ message: "오류 발생", error: err });
+  }
+});
+
 
 module.exports = router;
