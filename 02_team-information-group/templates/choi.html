@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
     <head>
         <meta charset="UTF-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -13,6 +13,9 @@
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
             crossorigin="anonymous"
         />
+        <!-- 제이쿼리 -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
@@ -22,69 +25,62 @@
         <!-- 폰트 -->
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet" />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet" />
+
         <!-- css -->
         <link href="{{ url_for('static', filename='css/common.css') }}" rel="stylesheet" />
+        
         <style>
-            .guestbook {
-                width: 30%;
-                font-size: 12px;
-            }
-            .comment_box p {
-                font-size: 14px;
-            }
-            .blockquote-footer {
-                margin: 0;
-            }
-            .mycards {
-                margin-bottom: 10px;
-            }
             .my-info {
                 display: flex;
                 justify-content: space-between;
                 gap: 50px;
             }
-            .btns {
-                display: flex;
-                gap: 10px;
-                justify-content: end;
+
+            .guestbook {
+                width: 300px;
             }
-            .btns button {
-                flex: initial;
-                width: 100px;
+
+            .card {
+                height: 130px;
+                margin: 5px 0 5px 0;
             }
         </style>
+        
     </head>
 
     <body>
-        <div class="wrap kim">
-            <!-- header -->
-            {% include 'common/header.html' %}
-
-            <div class="btns mb-5">
-                <button id="btnEdit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#memberEditModal">수정</button>
-                <button class="btn btn-secondary" onClick="deleteMember()">삭제</button>
-            </div>
-            <div class="contents_box" style="display: flex; justify-content: space-between">
+        <!-- header -->
+        {% include 'common/header.html' %}
+        <div class="btns mb-5">
+            <button id="btnEdit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#memberEditModal">수정</button>
+            <button type="button" class="btn btn-secondary" onClick="deleteMember()">삭제</button>
+        </div>
+        <!-- main -->
+        <main class="main inner">
+            <div class="d-flex gap-5">
                 <div class="my-info"></div>
                 <div class="guestbook">
                     <div class="mypost">
                         <div class="form-floating mb-3">
                             <input type="text" class="form-control" id="name" placeholder="url" />
-                            <label for="floatingInput">이름</label>
+                            <label for="floatingInput">닉네임</label>
                         </div>
-                        <div class="form-floating">
+                        <div class="form-floating" style="margin: 0 0 5px 0">
                             <textarea class="form-control" placeholder="Leave a comment here" id="comment" style="height: 100px"></textarea>
-                            <label for="floatingTextarea2">comments</label>
+                            <label for="floatingTextarea2">방명록</label>
                         </div>
-                        <button onclick="save_comment()" type="button" class="btn btn-outline-dark">방명록 남기기</button>
+                        <button onclick="save_comment()" type="button" class="btn btn-dark">방명록 등록하기</button>
                     </div>
                     <div class="comment_box">
                         <div class="mycards" id="comment-list">
                             <div class="card">
                                 <div class="card-body">
                                     <blockquote class="blockquote mb-0">
-                                        <p>방명록 남기기 샘플</p>
-                                        <footer class="blockquote-footer">홍길동</footer>
+                                        <p>안녕하세요!</p>
+                                        <footer class="blockquote-footer">팀원</footer>
                                     </blockquote>
                                 </div>
                             </div>
@@ -92,12 +88,11 @@
                     </div>
                 </div>
             </div>
+        </main>
 
-            <footer class="footer">
-                <p>Copyright 2023 all rights reserved</p>
-            </footer>
-            <script src="{{ url_for('static',filename='js/common.js') }}"></script>
-        </div>
+        <!-- footer -->
+        {% include 'common/footer.html' %}
+
         <script src="{{ url_for('static',filename='js/common.js') }}"></script>
     </body>
 </html>
