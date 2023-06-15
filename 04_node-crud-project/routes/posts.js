@@ -38,10 +38,14 @@ router.get('/', async (req, res) => {
 router.get('/:postId', async (req, res) => {
   const { postId } = req.params;
   try {
-    const postData = await postSchema.findById(postId);
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
+    }
 
+    const postData = await postSchema.findById(postId);
     if (!postData) {
-      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+      return res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
     }
 
     res.status(200).json({ "message": "데이터 전송완료", "post": postData });
