@@ -33,49 +33,56 @@ const mongoose = require('mongoose');
 // POST : 댓글 등록하기
 router.post('/:postId', async (req, res) => {
   const { postId } = req.params;
-  req.body = clientComments;
-
-  // postId 유효성 검사
-  if (!mongoose.Types.ObjectId.isValid(postId)) {
-    res.status(404).json({ message: '유효하지 않은 게시물 ID입니다.' });
-    return;
-  }
+  const commentData = req.body;
 
   try {
-
-
-    // req.body 유효성 검사
-    if (!req.body.length) {
-      res.status(400).json({ message: '댓글 내용을 입력해주세요.' });
-      return;
+    // 유효성 검사: 댓글 ID (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 댓글 ID입니다." });
     }
 
-    const commentPromises = clientComments.map(async (comment) => {
-      const newComment = new commentSchema({
-        ...comment,
-        post: postId,
-        createdAt: new Date(),
-      });
-      await newComment.save();
-    });
-    await Promise.all(commentPromises);
+    // 유효성 검사 : body, params
+    if (!postId || !commentData) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
 
-    res.status(200).json({ message: '댓글이 작성되었습니다.' });
+    // 유효성 검사 : 댓글 내용
+    if (commentData.content === '') {
+      return res.status(400).json({ "message": "댓글 내용을 입력해주세요" })
+    }
+
+    const newComment = new commentSchema({
+      ...commentData,
+      post: postId
+    });
+    await newComment.save();
+
+    res.status(200).json({ "message": "댓글이 작성되었습니다.", "comment": newComment });
   } catch (error) {
-    res.status(400).json({ message: '게시글 조회에 실패하였습니다.', error: error });
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
 
 // GET : 게시물에 맞는 댓글 데이터 가져오기
 router.get('/:postId', async (req, res) => {
   const { postId } = req.params;
   try {
+    // 유효성 검사: 댓글 ID (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 댓글 ID입니다." });
+    }
+    
     const resultDatas = await commentSchema.find({ post: postId }, '_id user content'); // 뒤의 '_id .. ' 는 mongoDB 문법으로 특정 필드만 반환하도록 지정함
 
-    // 해당하는 postId만 가져오기
-    res.json(resultDatas);
+    // 유효성 검사 : body, params
+    if (!postId) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
+
+    res.status(200).json({ "message": "데이터 전송완료", "comments": resultDatas })
   } catch (error) {
-    res.status(400).json({ "message": "Error" });
+    res.status(400).json({ "message": error });
   }
 });
 

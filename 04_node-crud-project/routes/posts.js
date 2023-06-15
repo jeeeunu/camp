@@ -4,7 +4,7 @@ const postSchema = require('../schemas/post-shema');
 const mongoose = require('mongoose');
 
 
-// POST: 게시물 데이터 내보내기
+// POST: 게시물 등록하기
 router.post('/', async (req, res) => {
   const postDatas = req.body;
   try {
