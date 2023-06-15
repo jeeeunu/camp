@@ -26,7 +26,7 @@ const cliendDeleteComments = {
 const express = require('express');
 const router = express.Router();
 const commentSchema = require('../schemas/comment-shema');
-// const postSchema = require('../schemas/post-shema')
+const postSchema = require('../schemas/post-shema')
 const mongoose = require('mongoose');
 
 
@@ -36,9 +36,11 @@ router.post('/:postId', async (req, res) => {
   const commentData = req.body;
 
   try {
-    // 유효성 검사: 댓글 ID (최상단 위치)
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 댓글 ID입니다." });
+
+    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    const postData = await postSchema.findById(postId);
+    if (!mongoose.Types.ObjectId.isValid(postId) || !postData) {
+      return res.status(404).json({ "message": "게시글 조회에 실패하였습니다." });
     }
 
     // 유효성 검사 : body, params
@@ -68,11 +70,13 @@ router.post('/:postId', async (req, res) => {
 router.get('/:postId', async (req, res) => {
   const { postId } = req.params;
   try {
-    // 유효성 검사: 댓글 ID (최상단 위치)
-    if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 댓글 ID입니다." });
+
+    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    const postData = await postSchema.findById(postId);
+    if (!mongoose.Types.ObjectId.isValid(postId) || !postData) {
+      return res.status(404).json({ "message": "게시글 조회에 실패하였습니다." });
     }
-    
+
     const resultDatas = await commentSchema.find({ post: postId }, '_id user content'); // 뒤의 '_id .. ' 는 mongoDB 문법으로 특정 필드만 반환하도록 지정함
 
     // 유효성 검사 : body, params
@@ -89,28 +93,28 @@ router.get('/:postId', async (req, res) => {
 // PUT : 댓글 수정하기
 router.put('/:commentID', async (req, res) => {
   const { commentID } = req.params;
-  req.body = clientEditComments;
-
-  // commentID 유효성 검사
-  if (!mongoose.Types.ObjectId.isValid(commentID)) {
-    res.status(404).json({ "message": "해당하는 데이터가 없습니다." })
-    return;
-  }
+  const editCommentData = req.body;
 
   try {
     const commentData = await commentSchema.findById(commentID);
 
-
-    if (!req.body.comment) {
+    // 유효성 검사 : 댓글 작성 여부
+    if (!editCommentData.content) {
       res.status(400).json({ "message": "댓글내용을  입력해주세요." })
       return;
     }
 
-    if (commentData.password === req.body.password) {
-      await commentData.updateOne({ $set: req.body })
+    // 유효성 검사 : body, params
+    if (!commentID || !editCommentData) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
+
+    // 유효성 검사 : 비밀번호
+    if (commentData.password === editCommentData.password) {
+      await commentData.updateOne({ $set: editCommentData })
       res.status(200).json({ "message": "댓글 수정 완료" })
     } else {
-      res.status(400).json({ "message": "비번 아님" })
+      res.status(400).json({ "message": "비밀번호가 틀렸습니다." })
     }
 
   } catch (error) {
@@ -122,25 +126,21 @@ router.put('/:commentID', async (req, res) => {
 // DELETE : 댓글 삭제
 router.delete('/:commentID', async (req, res) => {
   const { commentID } = req.params;
-  req.body = cliendDeleteComments;
-
-  // commentID 유효성 검사
-  if (!mongoose.Types.ObjectId.isValid(commentID)) {
-    return res.status(404).json({ "message": "해당하는 데이터가 없습니다." });
-  }
+  const deleteData = req.body;
 
   try {
     const commentData = await commentSchema.findById(commentID);
 
-    if (!commentData) {
-      return res.status(404).json({ "message": "해당하는 데이터가 없습니다." });
+    // 유효성 검사 : body, params
+    if (!commentID || !deleteData) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
     }
 
-    if (commentData.password === req.body.password) {
+    if (commentData.password === deleteData.password) {
       await commentData.deleteOne();
       return res.status(200).json({ "message": "댓글 삭제 완료" });
     } else {
-      return res.status(400).json({ "message": "비번 아님" });
+      return res.status(400).json({ "message": "비밀번호가 틀렸습니다." });
     }
 
   } catch (error) {
