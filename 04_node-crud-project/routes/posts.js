@@ -1,130 +1,120 @@
-//-- 클라이언트 : 게시물 생성 --//
-const clientPosts = [
-  {
-    user: "Developer1",
-    password: "1234",
-    title: "안녕하세요",
-    content: "안녕하세요 Developer1 입니다."
-  },
-  {
-    user: "Developer2",
-    password: "1234",
-    title: "안녕하세요",
-    content: "안녕하세요 Developer2 입니다."
-  },
-  {
-    user: "Developer3",
-    password: "1234",
-    title: "안녕하세요",
-    content: "안녕하세요 Developer3 입니다."
-  }
-];
-
-//-- 클라이언트 : 수정 게시물 --//
-const clientEditPosts = {
-  title: "제목도 수정해떠요!!!",
-  content: "수정해떠요!!!!",
-}
-
-//-- 클라이언트 : 게시물 삭제 --//
-const cliendDeletePosts = {
-  password: "1234",
-}
-
-// ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
 const postSchema = require('../schemas/post-shema');
+const mongoose = require('mongoose');
 
 
 // POST: 게시물 데이터 내보내기
 router.post('/', async (req, res) => {
+  const postDatas = req.body;
   try {
-    req.body = clientPosts;
+    // 유효성 검사 : body, params
+    if (!postDatas || !postDatas.length) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
 
-    await Promise.all(req.body.map(async (post) => {
-      // for of문 -> 병렬방식으로 변경 (순서를 보장할 필요 없는 반복작업)
-      const newPost = new postSchema(
-        {
-          ...post,
-          createdAt: new Date()
-        }
-      );
-      await newPost.save();
-    }));
+    await postSchema.create(postDatas);
 
-    res.status(200).json({ "message": "게시글을 생성하였습니다." });
-  } catch (erroror) {
-    res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    res.status(200).json({ "message": "게시글을 생성하였습니다.", "post": postDatas });
+  } catch (error) {
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
+
 
 // GET : 게시물 데이터 가져오기
 router.get('/', async (req, res) => {
   try {
     const postDatas = await postSchema.find();
-    res.json(postDatas)
+    res.json({ "result": postDatas })
   } catch (error) {
-    res.status(400).json({ "message": "hey" });
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
 
 // GET : 게시물 상세 페이지 데이터 가져오기
-router.get('/:postID', async (req, res) => {
-  const { postID } = req.params;
-
+router.get('/:postId', async (req, res) => {
+  const { postId } = req.params;
   try {
-    const postData = await postSchema.findById(postID);
+    const postData = await postSchema.findById(postId);
 
-    if (postData) {
-      res.status(200).json({ "결과": postData });
-    } else {
-      res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
+    if (!postData) {
+      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
     }
+
+    res.status(200).json({ "message": "데이터 전송완료", "post": postData });
   } catch (error) {
-    res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
 
 // PUT : 게시물 수정하기
-router.put('/:postID', async (req, res) => {
-  const { postID } = req.params;
-  req.body = clientEditPosts;
+router.put('/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const editData = req.body;
 
   try {
-    const postData = await postSchema.findById(postID);
-
-    if (postData && req.body) {
-      await postData.updateOne({ $set: { ...clientEditPosts } });
-      res.status(200).json({ "message": "게시글을 수정하였습니다." });
+    // 유효성 검사: 게시물 ID (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 게시물입니다." });
     }
 
+    const postData = await postSchema.findById(postId);
+
+    // 유효성 검사 : body, params
+    if (!postId || !editData || !editData.password) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
+
+    // 유효성 검사 : 비밀번호 일치 여부
+    if (postData.password !== editData.password) {
+      return res.status(400).json({ "message": "비밀번호가 일치하지 않습니다." });
+    }
+
+    const updatedPost = await postSchema.findByIdAndUpdate(postId, editData);
+
+    res.status(200).json({ "message": "게시글을 수정하였습니다.", "post": updatedPost });
   } catch (error) {
-    if (error.name === "CastError") {
-      res.status(404).json({ "message": "그런 게시물은 없습니다만", error: error });
-    } else {
-      res.status(400).json({ "message": "게시글 조회에 실패하였습니다.", error: error });
-    }
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
 
 // DELETE : 게시물 삭제하기
-router.delete('/:postID', async (req, res) => {
-  const { postID } = req.params;
-  req.body = cliendDeletePosts;
+router.delete('/:postId', async (req, res) => {
+  const { postId } = req.params;
+  const deleteData = req.body;
 
   try {
-    const postData = await postSchema.findById(postID);
-    if (postData.password === req.body.password) {
-      await postData.deleteOne();
-      res.status(200).json({ "message": "게시물을 삭제하였습니다." });
-    } else {
-      res.status(401).json({ "message": "비밀번호가 일치하지 않습니다." });
+    // 유효성 검사: 게시물 ID (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
     }
+
+    const postData = await postSchema.findById(postId);
+
+    // 유효성 검사 : body, params
+    if (!postId || !deleteData || !deleteData.password) {
+      return res.status(400).json({ "message": "데이터 형식이 올바르지 않습니다." });
+    }
+
+    // 유효성 검사 : 비밀번호 일치 여부
+    if (postData.password !== deleteData.password) {
+      return res.status(401).json({ "message": "비밀번호가 일치하지 않습니다." });
+    }
+
+    await postData.deleteOne();
+
+    res.status(200).json({ "message": "게시물을 삭제하였습니다." });
   } catch (error) {
-    res.status(400).json({ "message": "오류 발생", erroror: error });
+    res.status(400).json({ "message": "오류 발생", "error": error });
   }
 });
+
+
 
 
 module.exports = router;

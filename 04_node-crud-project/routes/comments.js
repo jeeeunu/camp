@@ -31,12 +31,12 @@ const mongoose = require('mongoose');
 
 
 // POST : 댓글 등록하기
-router.post('/:postID', async (req, res) => {
-  const { postID } = req.params;
+router.post('/:postId', async (req, res) => {
+  const { postId } = req.params;
   req.body = clientComments;
 
-  // postID 유효성 검사
-  if (!mongoose.Types.ObjectId.isValid(postID)) {
+  // postId 유효성 검사
+  if (!mongoose.Types.ObjectId.isValid(postId)) {
     res.status(404).json({ message: '유효하지 않은 게시물 ID입니다.' });
     return;
   }
@@ -53,7 +53,7 @@ router.post('/:postID', async (req, res) => {
     const commentPromises = clientComments.map(async (comment) => {
       const newComment = new commentSchema({
         ...comment,
-        post: postID,
+        post: postId,
         createdAt: new Date(),
       });
       await newComment.save();
@@ -67,12 +67,12 @@ router.post('/:postID', async (req, res) => {
 });
 
 // GET : 게시물에 맞는 댓글 데이터 가져오기
-router.get('/:postID', async (req, res) => {
-  const { postID } = req.params;
+router.get('/:postId', async (req, res) => {
+  const { postId } = req.params;
   try {
-    const resultDatas = await commentSchema.find({ post: postID }, '_id user content'); // 뒤의 '_id .. ' 는 mongoDB 문법으로 특정 필드만 반환하도록 지정함
+    const resultDatas = await commentSchema.find({ post: postId }, '_id user content'); // 뒤의 '_id .. ' 는 mongoDB 문법으로 특정 필드만 반환하도록 지정함
 
-    // 해당하는 postID만 가져오기
+    // 해당하는 postId만 가져오기
     res.json(resultDatas);
   } catch (error) {
     res.status(400).json({ "message": "Error" });
