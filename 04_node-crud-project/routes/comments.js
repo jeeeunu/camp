@@ -1,28 +1,3 @@
-//-- 클라이언트 : 댓글 생성 --//
-const clientComments = [
-  {
-    user: "댓글 작성자1",
-    password: "1234",
-    content: "안녕하세요 댓글입니다."
-  },
-  {
-    user: "댓글 작성자2",
-    password: "12ㄴㄴ34",
-    content: "안녕하세요 댓글입니다.22"
-  },
-];
-
-//-- 클라이언트 : 댓글 수정 --//
-const clientEditComments = {
-  password: "1234",
-}
-
-//-- 클라이언트 : 댓글 삭제 --//
-const cliendDeleteComments = {
-  password: "1234",
-}
-
-// ------------------------------------------------------------------------- //
 const express = require('express');
 const router = express.Router();
 const commentSchema = require('../schemas/comment-shema');
@@ -38,10 +13,15 @@ router.post('/:postId', async (req, res) => {
   try {
 
     // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
-    const postData = await postSchema.findById(postId);
-    if (!mongoose.Types.ObjectId.isValid(postId) || !postData) {
-      return res.status(404).json({ "message": "게시글 조회에 실패하였습니다." });
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
     }
+
+    const postDataCheck = await postSchema.findById(postId);
+    if (!postDataCheck) {
+      return res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
+    }
+
 
     // 유효성 검사 : body, params
     if (!postId || !commentData) {
@@ -72,9 +52,13 @@ router.get('/:postId', async (req, res) => {
   try {
 
     // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
-    const postData = await postSchema.findById(postId);
-    if (!mongoose.Types.ObjectId.isValid(postId) || !postData) {
-      return res.status(404).json({ "message": "게시글 조회에 실패하였습니다." });
+    if (!mongoose.Types.ObjectId.isValid(postId)) {
+      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+    }
+
+    const postDataCheck = await postSchema.findById(postId);
+    if (!postDataCheck) {
+      return res.status(404).json({ "message": "해당하는 게시물이 없습니다." });
     }
 
     const resultDatas = await commentSchema.find({ post: postId }, '_id user content'); // 뒤의 '_id .. ' 는 mongoDB 문법으로 특정 필드만 반환하도록 지정함
