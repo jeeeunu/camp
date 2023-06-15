@@ -12,9 +12,9 @@ router.post('/:postId', async (req, res) => {
 
   try {
 
-    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
     if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
     }
 
     const postDataCheck = await postSchema.findById(postId);
@@ -51,9 +51,9 @@ router.get('/:postId', async (req, res) => {
   const { postId } = req.params;
   try {
 
-    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
     if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
     }
 
     const postDataCheck = await postSchema.findById(postId);
@@ -80,7 +80,16 @@ router.put('/:commentID', async (req, res) => {
   const editCommentData = req.body;
 
   try {
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(commentID)) {
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
+    }
+
     const commentData = await commentSchema.findById(commentID);
+    // 유효성 검사 : 댓글 데이터 확인
+    if (!commentData) {
+      return res.status(404).json({ "message": "해당하는 댓글이 없습니다." });
+    }
 
     // 유효성 검사 : 댓글 작성 여부
     if (!editCommentData.content) {
@@ -94,13 +103,12 @@ router.put('/:commentID', async (req, res) => {
     }
 
     // 유효성 검사 : 비밀번호
-    if (commentData.password === editCommentData.password) {
-      await commentData.updateOne({ $set: editCommentData })
-      res.status(200).json({ "message": "댓글 수정 완료" })
-    } else {
-      res.status(400).json({ "message": "비밀번호가 틀렸습니다." })
-    }
+    if (commentData.password !== editCommentData.password) {
+      return res.status(400).json({ "message": "비밀번호가 틀렸습니다." })
 
+    }
+    await commentData.updateOne({ $set: editCommentData })
+    res.status(200).json({ "message": "댓글 수정 완료" })
   } catch (error) {
     res.status(400).json({ "message": "오류", "error": error })
   }
@@ -113,7 +121,17 @@ router.delete('/:commentID', async (req, res) => {
   const deleteData = req.body;
 
   try {
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
+    if (!mongoose.Types.ObjectId.isValid(commentID)) {
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
+    }
+
     const commentData = await commentSchema.findById(commentID);
+
+    // 유효성 검사 : 댓글 데이터 확인
+    if (!commentData) {
+      return res.status(404).json({ "message": "해당하는 댓글이 없습니다." });
+    }
 
     // 유효성 검사 : body, params
     if (!commentID || !deleteData) {

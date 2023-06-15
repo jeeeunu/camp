@@ -57,9 +57,9 @@ router.put('/:postId', async (req, res) => {
   const editData = req.body;
 
   try {
-    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
     if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
     }
 
     const postData = await postSchema.findById(postId);
@@ -92,9 +92,9 @@ router.delete('/:postId', async (req, res) => {
   const deleteData = req.body;
 
   try {
-    // 유효성 검사: 게시물 ID 및 게시물 여부 확인 (최상단 위치)
+    // 유효성 검사: ID 여부 확인 (최상단 위치)
     if (!mongoose.Types.ObjectId.isValid(postId)) {
-      return res.status(404).json({ "message": "유효하지 않은 게시물 ID입니다." });
+      return res.status(404).json({ "message": "유효하지 않은 ID입니다." });
     }
 
     const postData = await postSchema.findById(postId);
