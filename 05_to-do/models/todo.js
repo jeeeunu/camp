@@ -7,7 +7,7 @@ const TodoSchema = new mongoose.Schema({
 });
 
 // 프론트엔드에 가상의 컬럼(virtual) 제공 => db에는 없으나 express내부에서만 확인가능함.
-TodoSchema.virtual("todoId").get(() => { this._id.toHexString(); }) // toHexString(); < 에러방지
+TodoSchema.virtual("todoId").get(function () { return this._id.toHexString(); })
 TodoSchema.set("toJSON", {
   virtuals: true
 })
