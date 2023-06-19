@@ -1,0 +1,4 @@
+/node_modules
+
+# 설치코드
+npm i jsonwebtoken cookie-parser
