@@ -8,7 +8,15 @@ const authMiddleware = require("../middlewares/auth-middleware");
 
 // 내 정보 조회 API
 router.get("/users/me", authMiddleware, async (req, res) => {
+  // console.log(res.locals.user);
+  const { email, nickname } = res.locals.user;
 
+  res.status(200).json({
+    user: {
+      email: email,
+      nickname: nickname
+    }
+  });
 });
 
 

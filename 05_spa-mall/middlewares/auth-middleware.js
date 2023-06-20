@@ -2,9 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../schemas/user");
 
 module.exports = async (req, res, next) => {
-  const { authorization } = req.cookies; // cookies안에 있는 authorization 가져옴
+  const { Authorization } = req.cookies; // cookies안에 있는 Authorization 가져옴
 
-  const [authType, authToken] = (authorization ?? "").split(" ");
+  const [authType, authToken] = (Authorization ?? "").split(" ");
 
   // authType === Bearer값인지 확인 / authToken 검증 필요
   if (authType !== 'Bearer' || !authToken) {
