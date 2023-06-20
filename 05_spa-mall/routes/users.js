@@ -2,8 +2,15 @@
 
 const express = require("express");
 const router = express.Router();
-
 const User = require("../schemas/user");
+const authMiddleware = require("../middlewares/auth-middleware");
+
+
+// 내 정보 조회 API
+router.get("/users/me", authMiddleware, async (req, res) => {
+
+});
+
 
 // 회원가입 API
 router.post("/users", async (req, res) => {
