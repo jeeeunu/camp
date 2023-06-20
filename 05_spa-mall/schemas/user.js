@@ -24,7 +24,7 @@ UserSchema.virtual("userId").get(function () {
 
 // user 정보를 JSON으로 형변환 할 때 virtual 값이 출력되도록 설정
 UserSchema.set("toJSON", {
-  virtuals: true,
+  virtuals: true, 
 });
 
 module.exports = mongoose.model("User", UserSchema);
