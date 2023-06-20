@@ -1,20 +1,20 @@
-// app.js
-
 const express = require('express');
+const cookieParser = require("cookie-parser")
 const goodsRouter = require("./routes/goods.js");
 const cartsRouter = require("./routes/carts.js");
 const usersRouter = require("./routes/users.js");
 const authRouter = require("./routes/auth.js")
+
 const connect = require("./schemas");
+connect(); // mongoose를 연결합니다.
 
 const app = express();
 const port = 3000;
 
-connect(); // mongoose를 연결합니다.
-
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static("assets"));
 app.use("/api", [goodsRouter, cartsRouter, usersRouter, authRouter]);
 
