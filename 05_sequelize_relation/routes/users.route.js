@@ -56,5 +56,22 @@ router.post("/login", async (req, res) => {
 });
 
 
+// 사용자 조회 API
+router.get("/users/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  // 사용자 테이블과 사용자 정보 테이블에 있는 데이터를 가지고 와야함
+  const user = await Users.findOne({
+    attributes: ['userId', 'email', 'createdAt', 'updatedAt'],
+    include: [
+      {
+        model: UserInfos,
+        attributes: ['name', 'age', 'gender', 'profileImage'],
+      }
+    ]
+  });
+  return res.status(200).json({ data: user });
+})
+
 
 module.exports = router;
