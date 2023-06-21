@@ -14,6 +14,12 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Posts.init({
+    postId: {
+      allowNull: false, // NOT NULL
+      autoIncrement: true, // AUTO_INCREMENT
+      primaryKey: true, // Primary Key (기본키)
+      type: DataTypes.INTEGER,
+    },
     title: DataTypes.STRING,
     content: DataTypes.STRING,
     password: DataTypes.STRING
