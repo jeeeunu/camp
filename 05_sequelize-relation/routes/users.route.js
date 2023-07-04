@@ -63,7 +63,7 @@ router.get("/users/:userId", async (req, res) => {
   // 사용자 테이블과 사용자 정보 테이블에 있는 데이터를 가지고 와야함
   const user = await Users.findOne({
     attributes: ['userId', 'email', 'createdAt', 'updatedAt'],
-    include: [
+    include: [ // include 문법은 SQL의 JOIN과 동일한 역할을 수행함
       {
         model: UserInfos,
         attributes: ['name', 'age', 'gender', 'profileImage'],
