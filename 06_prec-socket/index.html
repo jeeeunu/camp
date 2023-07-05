@@ -16,6 +16,10 @@
             socket.on("message", (data) => {
                 console.log(data);
             });
+
+            socket.on("customEventName", (data) => {
+                console.log(data);
+            });
         </script>
     </body>
 </html>
